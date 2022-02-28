@@ -12,7 +12,7 @@ const db = mysql.createConnection(
       password: 'guero137',
       database: 'employee_db'
     },
-    console.log(`Connected to the employee_db database.`)
+    //console.log(`Connected to the employee_db database.`)
   );
 
 //INITIAL PROMPT
@@ -235,15 +235,15 @@ const callpromptUpdateEmployee = () => {
               //CALL THE UPDATE PROMPT
               initUpdateEmployeePrompt(rowsEmployee,rowsRole)
               .then( (answers) => {
-                console.log('Update Employee Answers',answers);
+                //console.log('Update Employee Answers',answers);
             
                
 
                 const role = rowsRole.find( role => role.title === answers.roleToUpdate);              
-                console.log('idRole selected', role.id); 
+                //console.log('idRole selected', role.id); 
                   
                 const employee = rowsEmployee.find( employee => (employee.first_name+' '+employee.last_name) === answers.employeeToUpdate);              
-                console.log('idEmployee selected', employee.id); 
+                //console.log('idEmployee selected', employee.id); 
 
                  //UPDATE EMPLOYEE ANSWERS
                 db.promise().query(`UPDATE employee set role_id = ${role.id} WHERE id = ${employee.id} `)
@@ -308,13 +308,26 @@ const callpromptUpdateEmployee = () => {
 
 
 // INIT FUNCTION CALLS DE INITIAL MENU
+
+var figlet = require('figlet');
+figlet('Employee Manager', function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+        console.dir(err);
+        return;
+    }
+    console.log(data);
+    init();
+});
+
 const init = () => {
+
     promptToDo()    
     .then((answers) => toDo(answers))
     //.then((ansToDo) => displayTable(ansToDo))    
     .catch((err) => console.error(err));
 };
-init();
+
 
 
 //TODO FUNCION RELATED TO THE PRINCIPAL MENU
