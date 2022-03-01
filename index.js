@@ -22,7 +22,7 @@ const promptToDo = () => {
         type: 'list',
         name: 'typeToDo',
         message: 'What would you like to do?',
-        choices: ['View all employees', 'Add employee', 'Update employee role','View All Roles','Add Role','View All Departments','Add Department'],
+        choices: ['View all employees', 'Add employee', 'Update employee role','View All Roles','Add Role','View All Departments','Add Department','View employees by manager','View employees by department'],
       },
     ]);
 };
@@ -301,10 +301,10 @@ const callpromptUpdateEmployee = () => {
     
   }//end };//end initUpdateEmployeePrompt function
 
-  
-
-
 };//end callpromptUpdateEmployee function
+
+
+
 
 
 // INIT FUNCTION CALLS DE INITIAL MENU
@@ -362,7 +362,15 @@ const toDo = (answer) => {
         case "Add Department":
          // code block
          addDepartment();
-          break;        
+          break;
+        case "View employees by manager":
+           // code block
+          viewEmployeesManager();
+          break;
+        case "View employees by department":
+          // code block
+          viewEmployeesDepartment();
+          break;          
       }
 };
 
@@ -442,3 +450,114 @@ const viewDepartments = () =>{
 
 
 
+//BONUS
+const viewEmployeesManager = () =>{
+  callpromptviewEmployeesManager();
+}
+
+const viewEmployeesDepartment = () =>{
+  callpromptviewEmployeesDepartment();
+}
+
+
+const callpromptviewEmployeesManager = () => {
+  //SEARCH FOR EMPLOYEES MANAGER
+  //initEmployeeManagerPrompt WITH MANAGER VALUES
+  //DISPLAY THE TABLE WITH THE MANAGER SELECTED
+  
+  db.promise().query('SELECT employee.id, employee.first_name, employee.last_name FROM employee')
+  .catch(console.log)
+  .then( ([rowsEmployee]) => {
+       
+              //CALL THE SEARCH MANAGER PROMPT
+              initEmployeeManagerPrompt(rowsEmployee)
+              .then( (answers) => {               
+                              
+                const employee = rowsEmployee.find( employee => (employee.first_name+' '+employee.last_name) === answers.employeeManager);           
+                
+                 //SEARCH EMPLOYEE BY MANAGER
+                db.promise().query(`SELECT employee.id,employee.first_name,employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name," ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON manager.id = employee.manager_id WHERE manager.id = ${employee.id} `)
+                .then( ([rows,fields]) => {       
+                    const table = cTable.getTable(rows); 
+                    console.log(table);        
+                    //console.log('result',result);
+                })
+                .catch(console.log)
+                .then( () => {
+                    init();
+                    //db.end();
+                });//end then for init()
+               
+              }); //end of then queryinitUpdateEmployeePrompt
+  
+  });//end of db SELECT employees
+
+  const initEmployeeManagerPrompt = (rowsEmployee) =>{   
+    
+    const rowEmployeeArray = rowsEmployee;   
+    const employeeNames = rowEmployeeArray.map(rowsEmployee => rowsEmployee.first_name+' '+rowsEmployee.last_name); 
+   
+    return inquirer.prompt([            
+      {
+       type: 'list',
+       name: 'employeeManager',
+       message: 'View employees by manager',       
+       choices: employeeNames,
+      },      
+    ]);
+    
+  }//end initEmployeeManagerPrompt function
+
+}//end callpromptviewEmployeesManager function
+
+const callpromptviewEmployeesDepartment = () => {
+  //SEARCH FOR EMPLOYEES DEPARTMENT
+  //initEmployeeDepartmentPrompt WITH DEPARTMENT VALUES
+  //DISPLAY THE TABLE WITH THE DEPARTMENT SELECTED
+
+  db.promise().query('SELECT department.id, department.name FROM department')
+  .catch(console.log)
+  .then( ([rowsDepartment]) => {
+       
+              //CALL THE SEARCH MANAGER PROMPT
+              initEmployeeDepartmentPrompt(rowsDepartment)
+              .then( (answers) => {               
+                              
+                const department = rowsDepartment.find( department => (department.name) === answers.employeeDepartment);           
+                
+                 //SEARCH EMPLOYEE BY MANAGER
+                db.promise().query(`SELECT employee.id,employee.first_name,employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name," ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON manager.id = employee.manager_id WHERE role.department_id = ${department.id} `)
+                .then( ([rows,fields]) => {       
+                    const table = cTable.getTable(rows); 
+                    console.log(table);        
+                    //console.log('result',result);
+                })
+                .catch(console.log)
+                .then( () => {
+                    init();
+                    //db.end();
+                });//end then for init()
+               
+              }); //end of then queryinitUpdateEmployeePrompt
+  
+  });//end of db SELECT employees
+
+  const initEmployeeDepartmentPrompt = (rowsDepartment) =>{   
+    
+    const rowEmployeeArray = rowsDepartment;   
+    const employeeDepartmentRows = rowEmployeeArray.map(rowsDepartment => rowsDepartment.name); 
+   
+    return inquirer.prompt([            
+      {
+       type: 'list',
+       name: 'employeeDepartment',
+       message: 'View employees by manager',       
+       choices: employeeDepartmentRows,
+      },      
+    ]);
+    
+  }//end initEmployeeManagerPrompt function
+
+
+
+}//end 

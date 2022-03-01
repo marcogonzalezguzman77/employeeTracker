@@ -11,3 +11,5 @@ The following image shows the interface look:
 ![Employee Tracker interface](./images/menuEmployeeTracker.png)
 
 You can watch the functionality of the interface in the next video [Employee Tracker Interface](https://youtu.be/XPmssXGg2cI).
+
+You can see Bonus features in the next video [Employee Tracker Interface Bonus](https://youtu.be/PPbiWZ9kh9E)
