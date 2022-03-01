@@ -10,4 +10,4 @@ The following image shows the interface look:
 
 ![Employee Tracker interface](./images/menuEmployeeTracker.png)
 
-You can watch the functionality of the interface in the next video [Employee Tracker Interface](https://guarded-gorge-18778.herokuapp.com).
+You can watch the functionality of the interface in the next video [Employee Tracker Interface](https://youtu.be/XPmssXGg2cI).
